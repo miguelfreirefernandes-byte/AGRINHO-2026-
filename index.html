@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador AgroForte 2026</title>
+    <style>
+        :root {
+            --verde-agro: #2d5a27;
+            --terra: #4e342e;
+            --agua: #2196f3;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f0;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 { color: var(---verde-agro); font-size: 1.5rem; }
+
+        /* Estilização da Planta */
+        #campo {
+            background-color: var(--terra);
+            height: 150px;
+            border-radius: 10px;
+            margin: 20px 0;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #planta {
+            font-size: 20px; /* Tamanho inicial da "semente" */
+            transition: all 0.5s ease;
+        }
+
+        /* Controles */
+        .controles {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .status {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn-acao {
+            background: var(--agua);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-acao:hover { opacity: 0.9; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Simulador AgroForte 2026</h1>
+    <p>Equilíbrio entre Produção e Meio Ambiente</p>
+
+    <div id="campo">
+        <!-- A planta começa como uma semente (emoji) -->
+        <div id="planta">🌱</div>
+    </div>
+
+    <div class="controles">
+        <label>Temperatura Estufa: <span id="valTemp">22</span>°C</label><br>
+        <input type="range" id="temp" min="0" max="50" value="22" oninput="atualizarTemp()">
+        
+        <div style="margin-top: 15px;">
+            <button class="btn-acao" onclick="irrigar()">Irrigar Planta 💧</button>
+            <button class="btn-acao" style="background: #ef6c00;" onclick="passarDia()">Próximo Dia ⏩</button>
+        </div>
+    </div>
+
+    <div class="status">
+        <div>Dia: <b id="dia">1</b></div>
+        <div>Umidade: <b id="umidade">100</b>%</div>
+        <div colspan="2">Saúde: <b id="saude">Boa</b></div>
+    </div>
+    
+    <p id="mensagem" style="color: #666; font-size: 0.9rem; margin-top: 10px;"></p>
+</div>
+
+<script>
+    // Variáveis de estado do simulador
+    let dia = 1;
+    let umidade = 100;
+    let tamanhoPlanta = 20;
+    let temperatura = 22;
+
+    function atualizarTemp() {
+        temperatura = document.getElementById('temp').value;
+        document.getElementById('valTemp').innerText = temperatura;
+    }
+
+    function irrigar() {
+        umidade = Math.min(umidade + 30, 100);
+        document.getElementById('umidade').innerText = umidade;
+        document.getElementById('mensagem').innerText = "Você irrigou a plantação!";
+    }
+
+    function passarDia() {
+        dia++;
+        umidade -= 25; // A terra seca com o passar do tempo
+        
+        let msg = "";
+        
+        // Lógica de Crescimento Baseada no Equilíbrio
+        if (temperatura >= 18 && temperatura <= 28 && umidade > 30) {
+            // Condições ideais
+            tamanhoPlanta += 15;
+            document.getElementById('saude').innerText = "Excelente";
+            document.getElementById('saude').style.color = "green";
+            msg = "Clima perfeito! A planta cresceu rápido.";
+        } else if (umidade <= 0) {
+            document.getElementById('saude').innerText = "Murcha";
+            document.getElementById('saude').style.color = "red";
+            msg = "A planta está secando! Irrigue logo.";
+            umidade = 0;
+        } else {
+            // Fora do ideal
+            tamanhoPlanta += 5;
+            document.getElementById('saude').innerText = "Lento";
+            document.getElementById('saude').style.color = "orange";
+            msg = "Temperatura ou umidade fora do ideal.";
+        }
+
+        // Atualiza o visual da planta
+        const planta = document.getElementById('planta');
+        planta.style.fontSize = tamanhoPlanta + "px";
+        
+        // Evolução do ícone
+        if(tamanhoPlanta > 100) planta.innerText = "🥬"; // Vira uma alface/verdura
+        else if(tamanhoPlanta > 50) planta.innerText = "🌿";
+
+        // Atualiza a tela
+        document.getElementById('dia').innerText = dia;
+        document.getElementById('umidade').innerText = umidade;
+        document.getElementById('mensagem').innerText = msg;
+
+        // Fim de jogo (Colheita)
+        if(dia >= 10) {
+            alert("Simulação Finalizada! Verifique seu desempenho em sustentabilidade.");
+            location.reload(); // Reinicia
+        }
+    }
+</script>
+
+</body>
+</html>
