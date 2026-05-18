@@ -13,7 +13,8 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f4f0;
+            background: radial-gradient(circle at top left, rgba(45, 90, 39, 0.16), transparent 28%),
+                        linear-gradient(160deg, #f2f8f4 0%, #e8f0fb 100%);
             display: flex;
             justify-content: center;
             padding: 20px;
@@ -22,154 +23,364 @@
         .container {
             background: white;
             padding: 2rem;
-            border-radius: 15px;
+            border-radius: 28px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            max-width: 500px;
+            max-width: 580px;
             width: 100%;
             text-align: center;
+            border: 1px solid rgba(45, 90, 39, 0.12);
         }
 
-        h1 { color: var(---verde-agro); font-size: 1.5rem; }
+        h1 { color: var(--verde-agro); font-size: 1.8rem; margin-bottom: 0.25rem; }
+
+        .container p {
+            color: #4f5d45;
+            margin-bottom: 1rem;
+        }
+
+        .top-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 16px;
+            margin-bottom: 14px;
+            border-radius: 999px;
+            background: rgba(33, 150, 243, 0.12);
+            color: #1565c0;
+            font-weight: 700;
+            font-size: 0.95rem;
+            border: 1px solid rgba(33, 150, 243, 0.18);
+        }
+
+        .top-badge span {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #2196f3;
+        }
 
         /* Estilização da Planta */
         #campo {
             background-color: var(--terra);
-            height: 150px;
-            border-radius: 10px;
+            height: 180px;
+            border-radius: 14px;
             margin: 20px 0;
             display: flex;
             align-items: flex-end;
             justify-content: center;
             position: relative;
             overflow: hidden;
+            box-shadow: inset 0 6px 12px rgba(0,0,0,0.15);
         }
 
         #planta {
-            font-size: 20px; /* Tamanho inicial da "semente" */
-            transition: all 0.5s ease;
+            font-size: 24px; /* Tamanho inicial da "semente" */
+            transition: all 0.4s ease;
         }
 
         /* Controles */
         .controles {
             background: #f9f9f9;
-            padding: 15px;
-            border-radius: 10px;
+            padding: 18px;
+            border-radius: 12px;
             margin-bottom: 20px;
+            text-align: left;
         }
 
-        .status {
+        .controles label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .controles input[type="range"] {
+            width: 100%;
+            margin-bottom: 16px;
+        }
+
+        .botoes {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 15px;
+            grid-template-columns: repeat(2, minmax(130px, 1fr));
+            gap: 12px;
         }
 
         .btn-acao {
             background: var(--agua);
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
+            padding: 12px 16px;
+            border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
+            transition: transform 0.2s ease, opacity 0.2s ease;
         }
 
-        .btn-acao:hover { opacity: 0.9; }
+        .btn-acao:hover {
+            opacity: 0.95;
+            transform: translateY(-1px);
+        }
+
+        .btn-warning {
+            background: #ef6c00;
+        }
+
+        .btn-success {
+            background: #27ae60;
+        }
+
+        .status {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(150px, 1fr));
+            gap: 12px;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .status div {
+            background: #f7fbf7;
+            padding: 14px;
+            border-radius: 10px;
+            border: 1px solid #e5efe4;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 6px;
+        }
+
+        .status strong {
+            display: block;
+            margin-top: 8px;
+            font-size: 1.1rem;
+            color: #2d5a27;
+        }
+
+        .status .label {
+            font-size: 0.9rem;
+            color: #5d6b4d;
+        }
+
+        .info-card {
+            background: #eef8ef;
+            border: 1px solid #d8edd8;
+            border-radius: 12px;
+            padding: 18px;
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .info-card h2 {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+            color: #2d5a27;
+        }
+
+        .log {
+            margin-top: 12px;
+            font-size: 0.95rem;
+            color: #444;
+            min-height: 58px;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
+    <div class="top-badge"><span></span>Nova versão visual</div>
     <h1>Simulador AgroForte 2026</h1>
-    <p>Equilíbrio entre Produção e Meio Ambiente</p>
+    <p>Equilíbrio entre produção, clima e sustentabilidade.</p>
 
     <div id="campo">
-        <!-- A planta começa como uma semente (emoji) -->
         <div id="planta">🌱</div>
     </div>
 
     <div class="controles">
-        <label>Temperatura Estufa: <span id="valTemp">22</span>°C</label><br>
-        <input type="range" id="temp" min="0" max="50" value="22" oninput="atualizarTemp()">
-        
-        <div style="margin-top: 15px;">
-            <button class="btn-acao" onclick="irrigar()">Irrigar Planta 💧</button>
-            <button class="btn-acao" style="background: #ef6c00;" onclick="passarDia()">Próximo Dia ⏩</button>
+        <label>Temperatura Estufa: <span id="valTemp">22</span>°C</label>
+        <input type="range" id="temp" min="10" max="40" value="22" oninput="atualizarTemp()">
+
+        <div class="botoes">
+            <button class="btn-acao" onclick="irrigar()">Irrigar 💧</button>
+            <button class="btn-acao btn-success" onclick="fertilizar()">Fertilizar 🌿</button>
+            <button class="btn-acao btn-warning" onclick="proteger()">Proteger 🛡️</button>
+            <button class="btn-acao" onclick="passarDia()">Avançar Dia ⏩</button>
         </div>
     </div>
 
     <div class="status">
-        <div>Dia: <b id="dia">1</b></div>
-        <div>Umidade: <b id="umidade">100</b>%</div>
-        <div colspan="2">Saúde: <b id="saude">Boa</b></div>
+        <div>
+            <span class="label">Dia atual</span>
+            <strong id="dia">1</strong>
+        </div>
+        <div>
+            <span class="label">Dias restantes</span>
+            <strong id="diasRestantes">29</strong>
+        </div>
+        <div>
+            <span class="label">Umidade</span>
+            <strong id="umidade">100%</strong>
+        </div>
+        <div>
+            <span class="label">Nutrientes</span>
+            <strong id="nutrientes">80%</strong>
+        </div>
+        <div>
+            <span class="label">Saúde</span>
+            <strong id="saude">Boa</strong>
+        </div>
+        <div>
+            <span class="label">Clima</span>
+            <strong id="clima">Estável</strong>
+        </div>
     </div>
-    
-    <p id="mensagem" style="color: #666; font-size: 0.9rem; margin-top: 10px;"></p>
+
+    <div class="info-card">
+        <h2>Missão do dia</h2>
+        <p>Use água, fertilizante e proteção para manter a plantação saudável durante 30 dias.</p>
+        <div class="log" id="mensagem">Comece ajustando a temperatura ou irrigando a sua planta.</div>
+        <div class="log" id="resumoFinal" style="display: none;"></div>
+    </div>
 </div>
 
 <script>
-    // Variáveis de estado do simulador
+    const maxDias = 30;
     let dia = 1;
     let umidade = 100;
-    let tamanhoPlanta = 20;
+    let nutrientes = 80;
+    let tamanhoPlanta = 24;
     let temperatura = 22;
+    let defesaAtiva = false;
 
     function atualizarTemp() {
-        temperatura = document.getElementById('temp').value;
+        temperatura = parseInt(document.getElementById('temp').value, 10);
         document.getElementById('valTemp').innerText = temperatura;
+        atualizarMensagem(`Temperatura ajustada para ${temperatura}°C.`);
     }
 
     function irrigar() {
-        umidade = Math.min(umidade + 30, 100);
-        document.getElementById('umidade').innerText = umidade;
-        document.getElementById('mensagem').innerText = "Você irrigou a plantação!";
+        umidade = Math.min(umidade + 35, 100);
+        atualizarStatus();
+        atualizarMensagem('🌾 Você irrigou a plantação. A umidade melhorou!');
+    }
+
+    function fertilizar() {
+        nutrientes = Math.min(nutrientes + 25, 100);
+        atualizarStatus();
+        atualizarMensagem('✨ Fertilizante aplicado. Nutrientes fortalecidos.');
+    }
+
+    function proteger() {
+        defesaAtiva = true;
+        atualizarMensagem('🛡️ Defesa ativada contra pragas por um dia.');
     }
 
     function passarDia() {
-        dia++;
-        umidade -= 25; // A terra seca com o passar do tempo
-        
-        let msg = "";
-        
-        // Lógica de Crescimento Baseada no Equilíbrio
-        if (temperatura >= 18 && temperatura <= 28 && umidade > 30) {
-            // Condições ideais
-            tamanhoPlanta += 15;
-            document.getElementById('saude').innerText = "Excelente";
-            document.getElementById('saude').style.color = "green";
-            msg = "Clima perfeito! A planta cresceu rápido.";
-        } else if (umidade <= 0) {
-            document.getElementById('saude').innerText = "Murcha";
-            document.getElementById('saude').style.color = "red";
-            msg = "A planta está secando! Irrigue logo.";
-            umidade = 0;
-        } else {
-            // Fora do ideal
-            tamanhoPlanta += 5;
-            document.getElementById('saude').innerText = "Lento";
-            document.getElementById('saude').style.color = "orange";
-            msg = "Temperatura ou umidade fora do ideal.";
+        if (dia >= maxDias) {
+            finalizarSimulacao();
+            return;
         }
 
-        // Atualiza o visual da planta
-        const planta = document.getElementById('planta');
-        planta.style.fontSize = tamanhoPlanta + "px";
-        
-        // Evolução do ícone
-        if(tamanhoPlanta > 100) planta.innerText = "🥬"; // Vira uma alface/verdura
-        else if(tamanhoPlanta > 50) planta.innerText = "🌿";
+        dia += 1;
+        umidade = Math.max(umidade - 18, 0);
+        nutrientes = Math.max(nutrientes - 12, 0);
 
-        // Atualiza a tela
-        document.getElementById('dia').innerText = dia;
-        document.getElementById('umidade').innerText = umidade;
-        document.getElementById('mensagem').innerText = msg;
+        const evento = gerarEventoDoDia();
+        const crescimento = calcularCrescimento(evento);
+        tamanhoPlanta += crescimento;
+        atualizarPlanta();
+        atualizarStatus();
+        atualizarMensagem(evento.mensagem);
 
-        // Fim de jogo (Colheita)
-        if(dia >= 10) {
-            alert("Simulação Finalizada! Verifique seu desempenho em sustentabilidade.");
-            location.reload(); // Reinicia
+        defesaAtiva = false;
+
+        if (dia >= maxDias) {
+            finalizarSimulacao();
         }
     }
+
+    function gerarEventoDoDia() {
+        const eventos = [
+            { tipo: 'clima', mensagem: 'Sol agradável: ótimo para crescimento.', bonus: 12 },
+            { tipo: 'chuva', mensagem: 'Chuva leve: umidade aumenta e a planta sorri.', bonus: 10, umidade: 12 },
+            { tipo: 'vento', mensagem: 'Vento forte: mantenha a irrigação e proteção.', bonus: 4 },
+            { tipo: 'seca', mensagem: 'Período seco: a planta pede água urgente.', bonus: -8, umidade: -15 },
+            { tipo: 'praga', mensagem: 'Pragas se aproximam: use proteção para evitar danos.', bonus: -6, praga: true }
+        ];
+
+        const escolha = eventos[Math.floor(Math.random() * eventos.length)];
+        if (escolha.umidade) umidade = Math.min(100, Math.max(0, umidade + escolha.umidade));
+        if (escolha.praga && defesaAtiva) {
+            return { ...escolha, mensagem: 'Proteção eficaz! A praga foi repelida.', bonus: 8, praga: false };
+        }
+        return escolha;
+    }
+
+    function calcularCrescimento(evento) {
+        let bonus = evento.bonus;
+        if (temperatura < 18 || temperatura > 32) bonus -= 4;
+        if (umidade < 30) bonus -= 6;
+        if (nutrientes < 30) bonus -= 5;
+        if (evento.praga) bonus -= 10;
+        return Math.max(0, bonus);
+    }
+
+    function atualizarPlanta() {
+        const planta = document.getElementById('planta');
+        planta.style.fontSize = `${tamanhoPlanta}px`;
+
+        if (tamanhoPlanta > 140) planta.innerText = '🌻';
+        else if (tamanhoPlanta > 110) planta.innerText = '🥦';
+        else if (tamanhoPlanta > 80) planta.innerText = '🌿';
+        else planta.innerText = '🌱';
+    }
+
+    function atualizarStatus() {
+        document.getElementById('dia').innerText = dia;
+        document.getElementById('diasRestantes').innerText = Math.max(0, maxDias - dia);
+        document.getElementById('umidade').innerText = `${umidade}%`;
+        document.getElementById('nutrientes').innerText = `${nutrientes}%`;
+        document.getElementById('clima').innerText = temperatura >= 18 && temperatura <= 28 ? 'Estável' : 'Instável';
+
+        const saude = calcularSaude();
+        const saudeElemento = document.getElementById('saude');
+        saudeElemento.innerText = saude.text;
+        saudeElemento.style.color = saude.color;
+    }
+
+    function calcularSaude() {
+        if (umidade < 25 || nutrientes < 25) return { text: 'Fraca', color: '#d35400' };
+        if (temperatura < 16 || temperatura > 34) return { text: 'Sensível', color: '#f39c12' };
+        if (umidade > 65 && nutrientes > 60) return { text: 'Excelente', color: '#27ae60' };
+        return { text: 'Regular', color: '#2980b9' };
+    }
+
+    function atualizarMensagem(texto) {
+        document.getElementById('mensagem').innerText = texto;
+    }
+
+    function finalizarSimulacao() {
+        const saude = calcularSaude();
+        const mensagemFinal = `Simulação concluída em ${dia} dias. Sua plantação teve ${saude.text} saúde.`;
+
+        atualizarMensagem(mensagemFinal);
+        mostrarResumoFinal({
+            dia, umidade, nutrientes, saude: saude.text, clima: temperatura >= 18 && temperatura <= 28 ? 'Estável' : 'Instável'
+        });
+        desativarControles();
+    }
+
+    function mostrarResumoFinal({dia, umidade, nutrientes, saude, clima}) {
+        const resumo = document.getElementById('resumoFinal');
+        resumo.style.display = 'block';
+        resumo.innerText = `Resumo do cultivo:\n- Dias: ${dia}\n- Umidade final: ${umidade}%\n- Nutrientes finais: ${nutrientes}%\n- Clima: ${clima}\n- Saúde final: ${saude}`;
+    }
+
+    function desativarControles() {
+        document.querySelectorAll('.btn-acao').forEach(btn => btn.disabled = true);
+        document.getElementById('temp').disabled = true;
+    }
+
+    atualizarStatus();
+    atualizarPlanta();
 </script>
 
 </body>
